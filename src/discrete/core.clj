@@ -10,27 +10,33 @@
       (recur x (- y 1) (*' x current))
       (recur x (+ y 1) (/ current x))))))
 
-; a^b mod n
 (defn seed-planter [a current bit]
-  (let [doubled (*' current current)]
+  (let [squared (*' current current)]
     (if (= bit 1)
-      (*' doubled a)
-      doubled)))
+      (*' squared a)
+      squared)))
+
+(defn to-bits [b] 
+  (map #(Character/digit %1 2) (.toString (biginteger b) 2)))
 
 ; a^b through seed planting
 (defn power-sp [a b]
-  (let [bits-of-b (map #(Character/digit %1 2) (Long/toString b 2))]
+  (let [bits-of-b (to-bits b)]
     (loop [current 1
            bits bits-of-b]
       (if (= (count bits) 0)
         current
         (recur (seed-planter a current (first bits)) (rest bits))))))
-      ;     seed-planter (fn [current bit]
-      ;                     (if (= bit 1)
-      ;                       (*' current current a)
-      ;                       (*' current current)))]
-      ; (println bits-of-b)
-      ; (map (partial seed-planter a) bits-of-b)))
+
+; a^b (mod n) through seed planting
+(defn power-mod [a b n]
+  (let [bits-of-b (to-bits b)]
+    (loop [current 1
+           bits bits-of-b]
+      (if (= (count bits) 0)
+        current
+        (recur (mod (seed-planter a current (first bits)) n) (rest bits))))))
+
 
 (defn dot [v1 v2]
   (reduce + (map * v1 v2)))
