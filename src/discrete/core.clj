@@ -46,6 +46,28 @@
   (if (= b 0) a 
       (gcf b (mod a b))))
 
+(defn relatively-prime? [a b]
+  (= (gcf a b) 1))
+
+; The number of numbers in {1, 2, .., n} that are relatively prime to n
+(defn phi [n]
+  (loop [current 1 rp-count 0]
+    (if (= current n)
+      rp-count
+      (if (relatively-prime? current n)
+        (recur (inc current) (inc rp-count))
+        (recur (inc current) rp-count)))))
+
+(defn pki-e [d phi-n f]
+  (/ (+ 1 (* phi-n f)) d))
+
+(defn integer-pki-e [d phi-n]
+  (loop [f 1]
+    (let [e (pki-e d phi-n f)]
+    (if (not (ratio? e))
+      e
+      (recur (inc f))))))
+
 (defn power-mod
   ([a b n] (power-mod a b 1 n))
   ([a b current n]
