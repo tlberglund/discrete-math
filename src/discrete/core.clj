@@ -111,3 +111,13 @@
     (= (- 10 check-digit) modulus)))
 
 
+
+;; From https://gist.github.com/sritchie/1627900
+(defn transpose [coll]
+  (apply map vector coll))
+ 
+(defn matrix-mult [mat1 mat2]
+  (let [row-mult (fn [mat row] 
+                   (map (partial dot row) (transpose mat)))]
+    (map (partial row-mult mat2) mat1)))
+
