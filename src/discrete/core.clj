@@ -125,6 +125,14 @@
 (defn multisubset-count [n k]
   (binomial-coefficient (- (+ n k) 1) k))
 
+; integer partitioning
+; base cases need to be defined properly
+; (defn pk [n k]
+;   (cond 
+;     (= n k) (+ 1 (p n (- k 1)))
+;     (or (= k 0) (< n 0)) 0
+;     (or (= n 0) (= k 1)) 1
+;     :else (+ (pk n (dec n)) (pk (- n k) k))))
 
 
 ;; From https://gist.github.com/sritchie/1627900
