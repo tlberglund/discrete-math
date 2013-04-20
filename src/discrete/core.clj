@@ -42,12 +42,12 @@
   (reduce + (map * v1 v2)))
 
 ;; using Euclid's algorithm
-(defn gcf [a b] 
+(defn gcd [a b]
   (if (= b 0) a 
-      (gcf b (mod a b))))
+      (gcd b (mod a b))))
 
 (defn relatively-prime? [a b]
-  (= (gcf a b) 1))
+  (= (gcd a b) 1))
 
 ; The number of numbers in {1, 2, .., n} that are relatively prime to n
 (defn phi [n]
