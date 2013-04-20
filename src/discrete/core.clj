@@ -13,6 +13,37 @@
       (recur x (- y 1) (*' x current))
       (recur x (+ y 1) (/ current x))))))
 
+;; from http://clojure.roboloco.net/?tag=proper-divisors
+(defn proper-divisors [x]
+  (filter #(zero? (mod x %1)) (range 1 (+ 1 (/ x 2)))))
+
+(defn aliquot-sum [x]
+  (reduce + (proper-divisors x)))
+
+(defn dot [v1 v2]
+  (reduce + (map * v1 v2)))
+
+
+; find greatest common divisor using Euclid's algorithm
+(defn gcd [a b]
+  (if (= b 0) a 
+      (gcd b (mod a b))))
+
+(defn relatively-prime? [a b]
+  (= (gcd a b) 1))
+
+
+(defn fact [x] (reduce *' (range 1 (inc x))))
+
+(defn factorials []
+  (letfn [(factorial-seq [n1 n2]
+            (lazy-seq 
+              (cons fact (factorial-seq (inc n1) (*' (inc n1) n2)))))]
+  (factorial-seq 1 1)))
+
+(defn sum-of-digits [x]
+  (apply + (map #(Character/digit %1 10) (str x))))
+
 (defn seed-planter [a current bit]
   (let [squared (*' current current)]
     (if (= bit 1)
@@ -40,17 +71,25 @@
         current
         (recur (mod (seed-planter a current (first bits)) n) (rest bits))))))
 
+; horrible horrible prime test
+(defn accurate-prime? [x] (= (count (proper-divisors x)) 1))
 
-(defn dot [v1 v2]
-  (reduce + (map * v1 v2)))
+(defn fermat-prime? [n]
+  (let [a 9876]
+    (= (power-mod a n n) a)))
 
-;; using Euclid's algorithm
-(defn gcd [a b]
-  (if (= b 0) a 
-      (gcd b (mod a b))))
+; If Fermat test succeeds, check the slow way
+(defn checked-fermat-prime? [n]
+  (if-not 
+    (fermat-prime? n) false
+    (accurate-prime? n)))
 
-(defn relatively-prime? [a b]
-  (= (gcd a b) 1))
+(def carmichael-numbers
+  (letfn [(carmichael? [n]
+           (and
+            (fermat-prime? n)
+            (not (accurate-prime? n))))]
+  (lazy-seq (filter carmichael? pos-int))))
 
 ; The number of numbers in {1, 2, .., n} that are relatively prime to n
 (defn phi [n]
@@ -71,23 +110,6 @@
       e
       (recur (inc f))))))
 
-;; from http://clojure.roboloco.net/?tag=proper-divisors
-(defn proper-divisors [x]
-  (filter #(zero? (mod x %1)) (range 1 (+ 1 (/ x 2)))))
-
-(defn aliquot-sum [x]
-  (reduce + (proper-divisors x)))
-
-(defn fact [x] (reduce *' (range 1 (inc x))))
-
-(defn factorials []
-  (letfn [(factorial-seq [n1 n2]
-            (lazy-seq 
-              (cons fact (factorial-seq (inc n1) (*' (inc n1) n2)))))]
-  (factorial-seq 1 1)))
-
-(defn sum-of-digits [x]
-  (apply + (map #(Character/digit %1 10) (str x))))
 
 
 (defn isbn-10 [x]
@@ -129,13 +151,29 @@
   (binomial-coefficient (- (+ n k) 1) k))
 
 ; integer partitioning
-; base cases need to be defined properly
-; (defn pk [n k]
-;   (cond 
-;     (= n k) (+ 1 (p n (- k 1)))
-;     (or (= k 0) (< n 0)) 0
-;     (or (= n 0) (= k 1)) 1
-;     :else (+ (pk n (dec n)) (pk (- n k) k))))
+(defn partitions [k n]
+  (cond 
+    (= k 0) 0
+    (<= n 0) 0
+    (= k 1) 1
+    (= n 1) 1
+    :else (+ (partitions (dec k) (dec n)) (partitions k (- n k)))))
+
+
+; find [x y] where ax+by=1
+(defn euclid [a b]
+  (loop [x1 1 
+         y1 0 
+         x2 0 
+         y2 1 
+         r1 a 
+         r2 b]
+    (let [q (int (/ r1 r2))
+          ri (mod r1 r2)
+          xi (- x1 (* q x2))
+          yi (- y1 (* q y2))]
+      (if (= ri 1) [xi yi]
+        (recur x2 y2 xi yi r2 ri)))))
 
 
 ;; From https://gist.github.com/sritchie/1627900
