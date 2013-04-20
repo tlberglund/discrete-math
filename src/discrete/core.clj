@@ -68,13 +68,6 @@
       e
       (recur (inc f))))))
 
-(defn power-mod
-  ([a b n] (power-mod a b 1 n))
-  ([a b current n]
-    (if (= b 0)
-      current
-      (recur a (dec b) (mod (* a current) n) n))))
-
 ;; from http://clojure.roboloco.net/?tag=proper-divisors
 (defn proper-divisors [x]
   (filter #(zero? (mod x %1)) (range 1 (+ 1 (/ x 2)))))
@@ -109,6 +102,28 @@
         modulus (mod dot-product 10)
         check-digit (last digits)]
     (= (- 10 check-digit) modulus)))
+
+
+; A sequence
+; Order matters, repetition is allowed
+(defn sequence-count [x n]
+  (power x n))
+
+; An arrangement
+; Order matters, reptition is not allowed
+(defn arrangement-count [n k]
+  (/ (fact n) (fact (- n k))))
+
+; A combination or subset
+; Order does not matter, repetition is not allowed
+(defn binomial-coefficient [n k]
+  (/ (fact n) (* (fact k) (fact (- n k)))))
+
+; A multisubset
+; Order does not matter, repitition is allowed
+;(n+k-1, k)
+(defn multisubset-count [n k]
+  (binomial-coefficient (- (+ n k) 1) k))
 
 
 
