@@ -1,5 +1,8 @@
 (ns discrete.core)
 
+
+(def pos-int (rest (range)))
+
 ;; from http://programming-pages.com/2012/01/16/recursion-in-clojure/
 (defn power
   ([x y] (power x y 1))
