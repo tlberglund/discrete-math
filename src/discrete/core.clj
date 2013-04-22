@@ -157,6 +157,10 @@
     (= n 1) 1
     :else (+ (partitions (dec k) (dec n)) (partitions k (- n k)))))
 
+(defn pascal-row [n] 
+  (map (partial binomial-coefficient n) (range (inc n))))
+
+(def pascal-triangle (map pascal-row (range)))
 
 ; find [x y] where ax+by=1
 (defn euclid [a b]
