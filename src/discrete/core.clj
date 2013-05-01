@@ -118,7 +118,7 @@
     (= (mod dot-product 11) 0)))
 
 (defn isbn-13 [x]
-  (let [coefficients (flatten (repeat [1 3]))
+  (let [coefficients (cycle [1 3])
         isbn (apply str (filter #(Character/isDigit %1) (str x)))
         digits (map #(Character/digit %1 10) isbn)
         dot-product (dot coefficients (take 12 digits))
