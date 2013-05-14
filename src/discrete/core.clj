@@ -157,10 +157,28 @@
     (= n 1) 1
     :else (+ (partitions (dec k) (dec n)) (partitions k (- n k)))))
 
+
+(defn- inner-stirling [n k j]
+  (*
+    (power -1 (- k j))
+    (binomial-coefficient k j)
+    (power j n)))
+
+; Closed-form Stirling number of the second kind
+(defn stirling-number-2nd [n k]
+  (cond
+    (= k 1) 1
+    (= n k) 1
+    :else
+    (/
+      (reduce + (map #(inner-stirling n k %1) (range (inc k))))
+      (fact k))))
+
+
 (defn pascal-row [n] 
   (map (partial binomial-coefficient n) (range (inc n))))
 
-(def pascal-triangle (map pascal-row (range)))
+(def pascals-triangle (map pascal-row (range)))
 
 ; find [x y] where ax+by=1
 (defn euclid [a b]
