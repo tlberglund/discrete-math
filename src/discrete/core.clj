@@ -20,6 +20,20 @@
 (defn aliquot-sum [x]
   (reduce + (proper-divisors x)))
 
+(defn perfect? [x]
+  (= x (aliquot-sum x)))
+
+(defn deficient? [x]
+  (< x (aliquot-sum x)))
+
+(defn abundant? [x]
+  (> x (aliquot-sum x)))
+
+(def perfect-numbers (filter perfect? pos-int))
+(def abundant-numbers (filter abundant? pos-int))
+(def deficient-numbers (filter deficient? pos-int))
+
+
 (defn dot [v1 v2]
   (reduce + (map * v1 v2)))
 
@@ -75,14 +89,15 @@
 (defn accurate-prime? [x] (= (count (proper-divisors x)) 1))
 
 (defn fermat-prime? [n]
-  (let [a 9876]
-    (= (power-mod a n n) a)))
+  (= (power-mod 2 n n) 2))
 
 ; If Fermat test succeeds, check the slow way
 (defn checked-fermat-prime? [n]
   (if-not 
     (fermat-prime? n) false
     (accurate-prime? n)))
+
+(def prime-numbers (filter checked-fermat-prime? pos-int))
 
 (def carmichael-numbers
   (letfn [(carmichael? [n]
@@ -99,6 +114,13 @@
       (if (relatively-prime? current n)
         (recur (inc current) (inc rp-count))
         (recur (inc current) rp-count)))))
+
+
+(defn pki-d [n]
+  (let [filter-fn (partial relatively-prime? n)
+        starting-int (+ n (rand-int (* 10 n)))
+        d-candidates (drop starting-int pos-int)]
+    (first (filter filter-fn d-candidates))))
 
 (defn pki-e [d phi-n f]
   (/ (+ 1 (* phi-n f)) d))
@@ -129,8 +151,8 @@
 
 ; A sequence
 ; Order matters, repetition is allowed
-(defn sequence-count [x n]
-  (power x n))
+(defn sequence-count [n k]
+  (power n k))
 
 ; An arrangement
 ; Order matters, reptition is not allowed
@@ -149,12 +171,13 @@
   (binomial-coefficient (- (+ n k) 1) k))
 
 ; integer partitioning
-(defn partitions [k n]
+;  How many ways to partition an integer n into k pieces
+(defn partitions [n k]
   (cond 
     (= k 0) 0
-    (<= n 0) 0
+    (< n 0) 0
+    (= n 0) 1
     (= k 1) 1
-    (= n 1) 1
     :else (+ (partitions (dec k) (dec n)) (partitions k (- n k)))))
 
 
@@ -192,7 +215,7 @@
           ri (mod r1 r2)
           xi (- x1 (* q x2))
           yi (- y1 (* q y2))]
-      (if (= ri 1) [xi yi]
+      (if (= ri 0) [xi yi]
         (recur x2 y2 xi yi r2 ri)))))
 
 
