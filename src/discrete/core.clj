@@ -203,20 +203,21 @@
 
 (def pascals-triangle (map pascal-row (range)))
 
+
 ; find [x y] where ax+by=1
-(defn euclid [a b]
+(defn extended-euclid [a b]
   (loop [x1 1 
          y1 0 
          x2 0 
          y2 1 
          r1 a 
          r2 b]
-    (let [q (int (/ r1 r2))
-          ri (mod r1 r2)
-          xi (- x1 (* q x2))
-          yi (- y1 (* q y2))]
-      (if (= ri 0) [xi yi]
-        (recur x2 y2 xi yi r2 ri)))))
+    (if (= r2 0) [x1 y1]
+      (let [q (int (/ r1 r2))
+            ri (mod r1 r2)
+            xi (- x1 (* q x2))
+            yi (- y1 (* q y2))]
+          (recur x2 y2 xi yi r2 ri)))))
 
 
 ;; From https://gist.github.com/sritchie/1627900
