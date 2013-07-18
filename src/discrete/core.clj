@@ -132,6 +132,9 @@
       e
       (recur (inc f))))))
 
+
+
+
 (defn isbn-10 [x]
   (let [coefficients (reverse (range 1 11))
         isbn (apply str (filter #(Character/isDigit %1) (str x)))
