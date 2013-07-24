@@ -118,7 +118,7 @@
 
 (defn pki-d [n]
   (let [filter-fn (partial relatively-prime? n)
-        starting-int (+ n (rand-int (* 10 n)))
+        starting-int (inc n)
         d-candidates (drop starting-int pos-int)]
     (first (filter filter-fn d-candidates))))
 
