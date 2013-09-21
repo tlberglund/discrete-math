@@ -1,17 +1,24 @@
 (ns discrete.core)
 
-
 (def pos-int (rest (range)))
+
+; (def s (reverse (map #(/ 1 %) (range 1 9))))
+
+; (defn p-wrong [n]
+;   (reduce *
+;           (map (#(/ %1 %2)
+;                 reverse (range 1 (dec n))
+;                 (reverse (range 2 n))))))
 
 ;; from http://programming-pages.com/2012/01/16/recursion-in-clojure/
 (defn power
   ([x y] (power x y 1))
   ([x y current]
-  (if (= y 0)
-    current
-    (if (> y 0)
-      (recur x (- y 1) (*' x current))
-      (recur x (+ y 1) (/ current x))))))
+     (if (= y 0)
+       current
+       (if (> y 0)
+         (recur x (- y 1) (*' x current))
+         (recur x (+ y 1) (/ current x))))))
 
 ;; from http://clojure.roboloco.net/?tag=proper-divisors
 (defn proper-divisors [x]
@@ -94,17 +101,17 @@
 ; If Fermat test succeeds, check the slow way
 (defn checked-fermat-prime? [n]
   (if-not 
-    (fermat-prime? n) false
-    (accurate-prime? n)))
+      (fermat-prime? n) false
+      (accurate-prime? n)))
 
 (def prime-numbers (filter checked-fermat-prime? pos-int))
 
 (def carmichael-numbers
   (letfn [(carmichael? [n]
-           (and
-            (fermat-prime? n)
-            (not (accurate-prime? n))))]
-  (lazy-seq (filter carmichael? pos-int))))
+            (and
+             (fermat-prime? n)
+             (not (accurate-prime? n))))]
+    (lazy-seq (filter carmichael? pos-int))))
 
 ; The number of numbers in {1, 2, .., n} that are relatively prime to n
 (defn phi [n]
@@ -117,10 +124,19 @@
 
 
 (defn pki-d [n]
-  (let [filter-fn (partial relatively-prime? n)
-        starting-int (inc n)
-        d-candidates (drop starting-int pos-int)]
-    (first (filter filter-fn d-candidates))))
+  (let [phi-n (phi n)
+        d-candidates (fn [] (repeatedly (partial rand-int phi-n)))]
+    (first 
+     (drop-while 
+      #(not (relatively-prime? phi-n %1)) 
+      (d-candidates)))))
+
+
+; (defn pki-d [n]
+;   (let [filter-fn (partial relatively-prime? n)
+;         starting-int (inc n)
+;         d-candidates (drop starting-int pos-int)]
+;     (first (filter filter-fn d-candidates))))
 
 (defn pki-e [d phi-n f]
   (/ (+ 1 (* phi-n f)) d))
@@ -128,9 +144,9 @@
 (defn integer-pki-e [d phi-n]
   (loop [f 1]
     (let [e (pki-e d phi-n f)]
-    (if (not (ratio? e))
-      e
-      (recur (inc f))))))
+      (if (not (ratio? e))
+        e
+        (recur (inc f))))))
 
 
 
@@ -216,10 +232,10 @@
          r1 a 
          r2 b]
     (if (= r2 0) [x1 y1]
-      (let [q (int (/ r1 r2))
-            ri (mod r1 r2)
-            xi (- x1 (* q x2))
-            yi (- y1 (* q y2))]
+        (let [q (int (/ r1 r2))
+              ri (mod r1 r2)
+              xi (- x1 (* q x2))
+              yi (- y1 (* q y2))]
           (recur x2 y2 xi yi r2 ri)))))
 
 
