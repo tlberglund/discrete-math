@@ -1,35 +1,14 @@
-# code
+# Discrete Math You Need to Know
 
-FIXME: description
+Code examples that support my presentation by the same name.
 
-## Installation
+## Running this Code
 
-Download from http://example.com/FIXME.
+1. Have [Leiningen installed](https://github.com/technomancy/leiningen#installation)
+2. Clone this repo
+3. Run `lein repl` from the root of the repo
+4. Profit
 
-## Usage
+## Notes
 
-FIXME: explanation
-
-    $ java -jar code-0.1.0-standalone.jar [args]
-
-## Options
-
-FIXME: listing of options this app accepts.
-
-## Examples
-
-...
-
-### Bugs
-
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
-
-## License
-
-Copyright © 2013 FIXME
-
-Distributed under the Eclipse Public License, the same as Clojure.
+This could stand a little bit of refactoring. It would probably benefit from being broken up into a few more libraries. Pull requests are welcome.
