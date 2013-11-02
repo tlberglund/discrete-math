@@ -1,4 +1,5 @@
-(ns discrete.core)
+(ns discrete.core
+  (:use [clojure.repl]))
 
 (def pos-int (rest (range)))
 
