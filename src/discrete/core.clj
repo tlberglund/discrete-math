@@ -48,7 +48,7 @@
 
 ; find greatest common divisor using Euclid's algorithm
 (defn gcd [a b]
-  (if (= b 0) a 
+  (if (= b 0) a
       (gcd b (mod a b))))
 
 (defn relatively-prime? [a b]
@@ -59,7 +59,7 @@
 
 (defn factorials []
   (letfn [(factorial-seq [n1 n2]
-            (lazy-seq 
+            (lazy-seq
               (cons fact (factorial-seq (inc n1) (*' (inc n1) n2)))))]
   (factorial-seq 1 1)))
 
@@ -72,7 +72,7 @@
       (*' squared a)
       squared)))
 
-(defn to-bits [b] 
+(defn to-bits [b]
   (map #(Character/digit %1 2) (.toString (biginteger b) 2)))
 
 ; a^b through seed planting
@@ -101,7 +101,7 @@
 
 ; If Fermat test succeeds, check the slow way
 (defn checked-fermat-prime? [n]
-  (if-not 
+  (if-not
       (fermat-prime? n) false
       (accurate-prime? n)))
 
@@ -127,9 +127,9 @@
 (defn pki-d [n]
   (let [phi-n (phi n)
         d-candidates (fn [] (repeatedly (partial rand-int phi-n)))]
-    (first 
-     (drop-while 
-      #(not (relatively-prime? phi-n %1)) 
+    (first
+     (drop-while
+      #(not (relatively-prime? phi-n %1))
       (d-candidates)))))
 
 
@@ -182,7 +182,7 @@
 ; A combination or subset
 ; Order does not matter, repetition is not allowed
 (defn binomial-coefficient [n k]
-  (/ (fact n) (* (fact k) (fact (- n k)))))
+  (/ (fact n) (*' (fact k) (fact (- n k)))))
 
 ; A multisubset
 ; Order does not matter, repitition is allowed
@@ -193,7 +193,7 @@
 ; integer partitioning
 ;  How many ways to partition an integer n into k pieces
 (defn partitions [n k]
-  (cond 
+  (cond
     (= k 0) 0
     (< n 0) 0
     (= n 0) 1
@@ -218,7 +218,7 @@
       (fact k))))
 
 
-(defn pascal-row [n] 
+(defn pascal-row [n]
   (map (partial binomial-coefficient n) (range (inc n))))
 
 (def pascals-triangle (map pascal-row (range)))
@@ -226,11 +226,11 @@
 
 ; find [x y] where ax+by=1
 (defn extended-euclid [a b]
-  (loop [x1 1 
-         y1 0 
-         x2 0 
-         y2 1 
-         r1 a 
+  (loop [x1 1
+         y1 0
+         x2 0
+         y2 1
+         r1 a
          r2 b]
     (if (= r2 0) [x1 y1]
         (let [q (int (/ r1 r2))
@@ -243,9 +243,8 @@
 ;; From https://gist.github.com/sritchie/1627900
 (defn transpose [coll]
   (apply map vector coll))
- 
+
 (defn matrix-mult [mat1 mat2]
-  (let [row-mult (fn [mat row] 
+  (let [row-mult (fn [mat row]
                    (map (partial dot row) (transpose mat)))]
     (map (partial row-mult mat2) mat1)))
-
